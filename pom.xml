@@ -13,10 +13,49 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>shiro</name>
 	<description>SHIRO RUNNER</description>
+
+	<packaging>war</packaging>
+	<prerequisites>
+		<maven>3.0.0</maven>
+	</prerequisites>
+
 	<properties>
 		<java.version>17</java.version>
 		<javax.inject.version>1</javax.inject.version>
 		<javax.interceptor-api.version>1.2</javax.interceptor-api.version>
+		<usertype-core.version>6.0.0.GA</usertype-core.version>
+		<spring-security-jwt.version>1.1.1.RELEASE</spring-security-jwt.version>
+		<reflections.version>0.10.2</reflections.version>
+		<rhino.version>1.7.7</rhino.version>
+		<redisson.version>3.17.7</redisson.version>
+		<opencsv.version>3.8</opencsv.version>
+		<openhtml.version>1.0.9</openhtml.version>
+		<mockito-core.version>3.12.4</mockito-core.version>
+		<modelmapper.version>2.4.4</modelmapper.version>
+		<netty-all.version>4.1.65.Final</netty-all.version>
+		<maven-flywayFile-plugin.version>2.0</maven-flywayFile-plugin.version>
+		<jdbc.version>2.6.17.1021</jdbc.version>
+		<jjwt-api.version>0.10.5</jjwt-api.version>
+		<jjwt-impl.version>0.10.5</jjwt-impl.version>
+		<jjwt-jackson.version>0.10.5</jjwt-jackson.version>
+		<joda-time>2.9.4</joda-time>
+		<json-path.version>2.9.0</json-path.version>
+		<json-schema-validator.version>2.0.0</json-schema-validator.version>
+		<json-simple.version>1.1.1</json-simple.version>
+		<json.version>20231013</json.version>
+		<jsoup.version>1.15.3</jsoup.version>
+		<jackson-core.version>2.12.3</jackson-core.version>
+		<jackson-databind.version>2.12.7.1</jackson-databind.version>
+		<jackson.version>2.12.3</jackson.version>
+		<HikariCP.version>4.0.3</HikariCP.version>
+		<UserAgentUtils.version>1.21</UserAgentUtils.version>
+		<assertj-core.version>1.6.1</assertj-core.version>
+		<aws-java-sdk-s3.version>1.12.261</aws-java-sdk-s3.version>
+		<cron-utils.version>9.1.6</cron-utils.version>
+		<spring-boot-starter-amqp.version>2.0.1.RELEASE</spring-boot-starter-amqp.version>
+		<kafka-avro-serializer.version>7.0.1</kafka-avro-serializer.version>
+		<spring-kafka.version>2.9.11</spring-kafka.version>
+		<postgresql.version>42.3.9</postgresql.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -24,6 +63,39 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!--DataBase -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${HikariCP.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun</groupId>
+					<artifactId>tools</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+		<!--<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>${flyway.version}</version>
+		</dependency>-->
+
+		<!-- Core Required-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -49,6 +121,218 @@
 			<groupId>javax.interceptor</groupId>
 			<artifactId>javax.interceptor-api</artifactId>
 			<version>${javax.interceptor-api.version}</version>
+		</dependency>
+
+		<!--Date Time Function-->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>${joda-time}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jadira.usertype</groupId>
+			<artifactId>usertype.core</artifactId>
+			<version>${usertype-core.version}</version>
+		</dependency>
+
+		<!--Redis-->
+		<dependency>
+			<groupId>org.redisson</groupId>
+			<artifactId>redisson-spring-boot-starter</artifactId>
+			<version>${redisson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.redisson</groupId>
+			<artifactId>redisson-spring-data-25</artifactId>
+			<version>${redisson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.redisson</groupId>
+			<artifactId>redisson</artifactId>
+			<version>${redisson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<!--            <version>2.1.8.RELEASE</version>-->
+			<exclusions>
+				<exclusion>
+					<groupId>io.lettuce</groupId>
+					<artifactId>lettuce-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>${reflections.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>${netty-all.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+
+		<!--JSON Mapper-->
+		<!--<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>${modelmapper.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${json.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>${jsoup.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson-core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson-databind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-hibernate5</artifactId>
+		</dependency>
+		&lt;!&ndash;            <version>${jackson.version}</version>&ndash;&gt;
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-joda</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-json-org</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>-->
+
+
+		<!--Json Web TokeN -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jjwt-api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${jjwt-impl.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jjwt-jackson.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+
+		<!--PDF CSV-->
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>${opencsv.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.openhtmltopdf</groupId>
+			<artifactId>openhtmltopdf-rtl-support</artifactId>
+			<version>${openhtml.version}</version>
+		</dependency>
+		<dependency>
+			<!-- ALWAYS required. -->
+			<groupId>com.openhtmltopdf</groupId>
+			<artifactId>openhtmltopdf-core</artifactId>
+			<version>${openhtml.version}</version>
+		</dependency>
+		<dependency>
+			<!-- Required for PDF output. -->
+			<groupId>com.openhtmltopdf</groupId>
+			<artifactId>openhtmltopdf-pdfbox</artifactId>
+			<version>${openhtml.version}</version>
+		</dependency>
+
+
+		<!--Messaging Queues-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+			<version>${spring-boot-starter-amqp.version}</version>
+		</dependency>
+		<!--<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			<version>${spring-kafka.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-messaging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<artifactId>kotlin-stdlib</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.code.findbugs</groupId>
+					<artifactId>jsr305</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.confluent</groupId>
+			<artifactId>kafka-avro-serializer</artifactId>
+			<version>${kafka-avro-serializer.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>-->
+
+
+		<!--Misculinous-->
+		<dependency>
+			<groupId>org.mozilla</groupId>
+			<artifactId>rhino</artifactId>
+			<version>${rhino.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj-core.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.cronutils</groupId>
+			<artifactId>cron-utils</artifactId>
+			<version>${cron-utils.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>${aws-java-sdk-s3.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -85,6 +369,10 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository>
+		<repository>
+			<id>confluent</id>
+			<url>https://packages.confluent.io/maven/</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -92,7 +380,7 @@
 			<name>Spring Milestones</name>
 			<url>https://repo.spring.io/milestone</url>
 			<snapshots>
-				<enabled>false</enabled>
+				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
 		<pluginRepository>

@@ -1,7 +1,8 @@
-package com.hap.shiro.config;
+package com.hap.shiro.readiness;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import com.hap.shiro.config.LoggerDTO;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
@@ -13,16 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/logger")
+@RequestMapping("/app/rest/")
 public class LoggerController implements EnvironmentAware {
-    
+
     private Environment env;
     @Override
     public void setEnvironment(Environment environment) {
         this.env = environment;
     }
 
-    @RequestMapping(value = "/getlog", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getlogs", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<LoggerDTO> getloglist(){
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         List<LoggerDTO> loggers = new ArrayList<>();
@@ -33,7 +34,7 @@ public class LoggerController implements EnvironmentAware {
     }
 
     /*
-     * LoggerDTOJson = {"name":"com.Gitleaks.GitLeaksService.GitLeaksScript.ExecuteGitLeaksCommand","level":"ERROR"}
+     * LoggerDTOJson = {"name":"com.hap.shiro.readiness.ReadinessService","level":"ERROR"}
      * */
     @RequestMapping(value = "/setlog", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.NO_CONTENT)
