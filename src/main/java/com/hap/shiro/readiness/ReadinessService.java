@@ -243,7 +243,7 @@ public class ReadinessService implements EnvironmentAware {
         /*if (StringUtils.isEmpty(endpoint)) {
             systemStateMap.put("rabbitmq_connection_status", getRabbitmqConnectionStatus());
         }*/
-        systemStateMap.put("redis_connection_status", getRedisConnectionStatus());
+//        systemStateMap.put("redis_connection_status", getRedisConnectionStatus());
         systemStateMap.put("db_master_connection_status", getDbConnectionStatus());
         systemStateMap.put("heap_memory_status", getHeapMemoryStatus());
         systemStateMap.put("memory_status", getMemoryStatus());

@@ -85,6 +85,7 @@ public class UserServiceImp implements UserService, EnvironmentAware {
     public List<UserEntity> bulkUpdateUser(List<UserEntity> updateUserData, List<Long> userId) {
         List<UserEntity> userDataDB = new ArrayList<>();
 
+
         for (UserEntity user : updateUserData){
             if(checkLock(user.getUserId())){
                 System.out.println("UserID locked for 10 sec: "+user.getUserId());
@@ -105,17 +106,18 @@ public class UserServiceImp implements UserService, EnvironmentAware {
 //        return userRepository.save(userDataDB);
     }
 
-    private void relelokc(Long userID){
+    private boolean relelokc(Boolean isLockAquired,Long userID){
 
-        String key = "UPDATE_USER_WITH_ID__"+ String.valueOf(userID);
+        String key = "LOCK_USER_ID_"+ String.valueOf(userID);
         boolean isLockReleased = locker.releaseLock(key);
 
         if(isLockReleased){
-            log.error("lockRemovedKey: "+key);
+            log.error("LockRemovedSuccess: "+key);
+            isLockAquired = false;
         }else {
-            log.error("LockNotRemovedKey: "+key);
+            log.error("LockNotReleased: "+key);
         }
-
+        return isLockAquired;
     }
 
     private Boolean checkLock(Long userIdList){
@@ -125,20 +127,20 @@ public class UserServiceImp implements UserService, EnvironmentAware {
            String key = "UPDATE_USER_WITH_ID__"+ String.valueOf(userIdList);
            boolean isLockedAquired = false;
 
-           if(!key.equalsIgnoreCase("UPDATE_USER_WITH_ID__162")){
-               try {
-                   isLockedAquired = locker.acquireLock(key,leaseTime,waitTime);
-                   System.out.println("lockStatus: "+isLockedAquired);
-                   if (!isLockedAquired){
-                       log.error("lock not acquired for: "+key);
+//           if(!key.equalsIgnoreCase("UPDATE_USER_WITH_ID__162")){
+//               try {
+                   isLockedAquired = locker.acquireLock(key,300,4);
+                   System.out.println("lockStatus: "+isLockedAquired+" key: "+key);
+                   if (isLockedAquired){
+                       log.error("lock Aquired for: "+key);
                    }else {
-                       log.error("lock aquired on key: "+key);
+                       log.error("lockNot Aquired on key: "+key);
                    }
 
-               }catch (Exception e){
-
-               }
-           }
+//               }catch (Exception e){
+//
+//               }
+//           }
 
 
 //       }
@@ -154,5 +156,46 @@ public class UserServiceImp implements UserService, EnvironmentAware {
     public void setEnvironment(Environment env) {
         leaseTime = Long.parseLong(env.getProperty("app.REDIS_LOCK_LEASE_TIME"));
         waitTime = Long.parseLong(env.getProperty("app.REDIS_LOCK_WAIT_TIME"));
+    }
+
+
+    public String fetchUserRate(Long id) {
+        UserEntity user = null;
+
+        String key = "LOCK_USER_ID_"+ String.valueOf(id);
+        boolean isLockedAquired = false;
+
+        try {
+            isLockedAquired = locker.acquireLock(key,300,15);
+
+            if(!isLockedAquired){
+                log.error("lock AleardyLock for: "+key);
+                throw new RuntimeException(id+" is lockedWait for 5s");
+            } else {
+                log.error("lock Success for: "+key);
+            }
+            
+            user = UserEntity.builder()
+                    .userId(id)
+                    .useremail("DummyMail.com")
+                    .userName("DummyName")
+                    .userphone(234567890)
+                    .build();
+            Thread.sleep(10_000);
+            
+        }catch (Exception e){
+            if(isLockedAquired){
+                isLockedAquired = relelokc(isLockedAquired, id);
+                log.error("finllyLockValue"+isLockedAquired);
+            }
+            throw new RuntimeException("CatchFata Lawdeya");
+        }finally {
+            if(isLockedAquired){
+                isLockedAquired = relelokc(isLockedAquired, id);
+                log.error("finllyLockValue: "+isLockedAquired);
+            }
+        }
+
+     return user.toString();
     }
 }

@@ -1,0 +1,52 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: Duggu
+
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kblog
+    username: bloguser
+    password: bloguser
+
+  hibernate:
+    ddl-auto: update
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  HEAP_MEMORY_LIMIT: ${HEAP_MEMORY_LIMIT:90}
+  MEMORY_LIMIT: ${MEMORY_LIMIT:90}
+  DB_CONNECTIONS_LIMIT: ${DB_CONNECTIONS_LIMIT:90}
+  ACTIVE_MAX_THREAD_LIMIT: ${ACTIVE_MAX_THREAD_LIMIT:90}
+  REDIS_LOCK_LEASE_TIME: 300
+  REDIS_LOCK_WAIT_TIME: 3
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  ratelimiter:
+    instances:
+      userRateLimiter:
+        limit-for-period: 2
+        limit-refresh-period: 4s
+        # Corrected property: time-duration should be a positive value
+        time-duration: 1s  # You can adjust this value as needed
